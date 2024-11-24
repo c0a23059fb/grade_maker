@@ -11,33 +11,52 @@ class Students():
         exit()
 
     def __init__(self) -> None:
-        self.grades = {i:"" for i in __class__.students_list}
+        self.grades = {i:"" for i in __class__.students_list} # 名前と評価の辞書
         self.r_absence = [] # 連絡あり欠席
         self.f_absence = [] # 連絡なし欠席
 
-    # def check(self) -> None:
-    #     """生徒の出欠確認を行う"""
-    #     checks = input("出欠を入力してください（出席:0 連絡あり欠席:1 連絡なし欠席:2）")
-
-    #     if len(checks) == len(self.grades):
-    #         for i in self.grades:
+    def check(self) -> None:
+        """生徒の出欠確認を行う"""
+        names = [i for i in self.grades]
+        while True:
+            checks = input("出欠を入力してください(出席:0 連絡あり欠席:1 連絡なし欠席:2):")
+            if len(checks) == len(names):
+                if not self.input_checker(checks, "012"):
+                    print("不正な数値です")
+                else:
+                    for i, j in enumerate(names):
+                        if checks[i] != "0":
+                            if checks[i] == "1":
+                                self.r_absence.append(j)
+                            else:
+                                self.f_absence.append(j)
+                            del self.grades[j]
+                    break
+            else:
+                print("不正な入力です")
 
     def value(self) -> None:
-        flag = True
-
+        """
+        生徒の評価を行う
+        評価硬膜は三項目(モチベーション、理解力、授業態度)
+        """
         while True:
-            values = input(f"整数を{len(self.grades)}桁を入力(高い:3 普通:2 低い:1)")
+            values = input(f"整数を{len(self.grades)}桁を入力(高い:3 普通:2 低い:1):")
             if len(values) == len(self.grades):
-                for i, j in enumerate(self.grades.keys()):
-                    if values[i] not in "123":
-                        print("不正な数値です")
-                        break
-                    self.grades[j] += values[i]
-                    print(j, self.grades[j])
+                if not self.input_checker(values, "123"):
+                    print("不正な数値です")
                 else:
+                    for i, j in enumerate(self.grades):
+                        self.grades[j] += values[i]
                     break
             else:
                 print("入力が不正です")
+
+    def input_checker(self, string: str, length: str) -> bool:
+        for i in string:
+            if i not in length:
+                return False
+        return True
 
     # def identify(self):
     #     for i in self.grades.keys():
