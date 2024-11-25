@@ -1,5 +1,5 @@
-import time
 from sys import exit
+from time import strftime
 
 
 class Students():
@@ -79,6 +79,39 @@ class Students():
                     self.low[count].append(i)
                 count += 1
 
+    def output(self) -> None:
+        date = strftime("%Y%m%d")
+        label = ["モチベーション", "理解力", "授業態度"]
+
+        with open(f"grade_books/{date}.txt", "a", encoding = "utf-8") as file:
+            #欠席者追記
+            file.write("-----[欠席]-----\n")
+            for i in self.r_absence:
+                file.write(f"{i}\n")
+            for i in self.f_absence:
+                file.write(f"{i} (無欠)\n")
+            file.write("\n")
+
+            #生徒評価三項目出力
+            for i in range(3):
+                file.write(f"-----[{label[i]}]-----\n")
+                file.write("高い→")
+                for j in self.high[0]:
+                    file.write(f"\"{j}\", ")
+                file.write("\n")
+                file.write("普通→")
+                for j in self.normal[0]:
+                    file.write(f"\"{j}\", ")
+                file.write("\n")
+                if i != 2:
+                    file.write("低い→")
+                else:
+                    file.write("悪い→")
+                for j in self.low[0]:
+                    file.write(f"\"{j}\", ")
+                file.write("\n\n")
+
+
 
 def main() -> None:
     students = Students("students/sample.txt")
@@ -97,6 +130,9 @@ def main() -> None:
 
     #生徒評価をテンプレ形式へ変換
     students.identify()
+
+    #生徒評価をファイルへ出力
+    students.output()
 
 
 if __name__ == "__main__":
