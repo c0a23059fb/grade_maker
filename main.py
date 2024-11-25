@@ -19,6 +19,9 @@ class Students():
         self.grades = {i:"" for i in students_list} # 名前と評価の辞書
         self.r_absence = [] # 連絡あり欠席
         self.f_absence = [] # 連絡なし欠席
+        self.high = [[], [], []] # モチベーション
+        self.normal = [[], [], []] # 理解力
+        self.low = [[], [], []] # 授業態度
 
     def check(self) -> None:
         """生徒の出欠確認を行う"""
@@ -63,8 +66,18 @@ class Students():
                 return False
         return True
 
-    # def identify(self):
-    #     for i in self.grades.keys():
+    def identify(self):
+        """生徒評価を参考にリストへ振り分ける"""
+        for i in self.grades:
+            count = 0
+            for j in self.grades[i]:
+                if j == "3":
+                    self.high[count].append(i)
+                elif j == "2":
+                    self.normal[count].append(i)
+                else:
+                    self.low[count].append(i)
+                count += 1
 
 
 def main() -> None:
@@ -83,9 +96,7 @@ def main() -> None:
     students.value()
 
     #生徒評価をテンプレ形式へ変換
-    # students.identify()
-
-    print(students.grades)
+    students.identify()
 
 
 if __name__ == "__main__":
