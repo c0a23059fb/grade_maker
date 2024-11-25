@@ -117,8 +117,8 @@ class Students():
 
 
 def main() -> None:
-    students = Students("students/sample.txt")
-    for i in students.students_list:
+    students = Students("students/jiyu_B.txt")
+    for i in students.grades:
         print(i)
 
     #出欠確認
