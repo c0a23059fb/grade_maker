@@ -3,15 +3,20 @@ from sys import exit
 
 
 class Students():
-    with open("students/sample.txt", "r", encoding = "utf-8") as file:
-        lines = file.read().split("\n")
-    students_list = lines
-    if len(students_list) == 0:
-        print("生徒が存在しません")
-        exit()
 
-    def __init__(self) -> None:
-        self.grades = {i:"" for i in __class__.students_list} # 名前と評価の辞書
+    def __init__(self, path: str) -> None:
+        """
+        ファイルを読み込み、生徒情報を初期化する
+        path: 生徒名簿が記載されたファイルへのパス
+        """
+        with open(path, "r", encoding = "utf-8") as file:
+            lines = file.read().split("\n")
+        students_list = lines
+        if len(students_list) == 0:
+            print("生徒が存在しません")
+            exit()
+
+        self.grades = {i:"" for i in students_list} # 名前と評価の辞書
         self.r_absence = [] # 連絡あり欠席
         self.f_absence = [] # 連絡なし欠席
 
@@ -63,7 +68,7 @@ class Students():
 
 
 def main() -> None:
-    students = Students()
+    students = Students("students/sample.txt")
 
     #出欠確認
     print("生徒の出欠を確認してください")
