@@ -3,6 +3,7 @@ from time import strftime
 
 
 class Students():
+    """整頓の出欠と評価を管理するクラス"""
 
     def __init__(self, path: str) -> None:
         """
@@ -27,7 +28,7 @@ class Students():
         """生徒の出欠確認を行う"""
         names = [i for i in self.grades]
         while True:
-            checks = input("出欠を入力してください(出席:0 連絡あり欠席:1 連絡なし欠席:2):")
+            checks = input(f"整数{len(names)}桁を入力(出席:0 連絡あり欠席:1 連絡なし欠席:2):")
             if len(checks) == len(names):
                 if not self.input_checker(checks, "012"):
                     print("不正な数値です")
@@ -49,7 +50,7 @@ class Students():
         評価硬膜は三項目(モチベーション、理解力、授業態度)
         """
         while True:
-            values = input(f"整数を{len(self.grades)}桁を入力(高い:3 普通:2 低い:1):")
+            values = input(f"整数{len(self.grades)}桁を入力(高い:3 普通:2 低い:1):")
             if len(values) == len(self.grades):
                 if not self.input_checker(values, "123"):
                     print("不正な数値です")
@@ -61,6 +62,7 @@ class Students():
                 print("入力が不正です")
 
     def input_checker(self, string: str, length: str) -> bool:
+        """入力文字列の正当性を確認する"""
         for i in string:
             if i not in length:
                 return False
@@ -80,6 +82,7 @@ class Students():
                 count += 1
 
     def output(self) -> None:
+        """入力された出欠と評価をファイルへ出力する"""
         date = strftime("%Y%m%d")
         label = ["モチベーション", "理解力", "授業態度"]
 
@@ -115,10 +118,14 @@ class Students():
 
 def main() -> None:
     students = Students("students/sample.txt")
+    for i in students.students_list:
+        print(i)
 
     #出欠確認
     print("生徒の出欠を確認してください")
     students.check()
+    for i in students.grades:
+        print(i)
 
     #生徒評価の三項目を入力
     print("生徒のモチベーションを評価してください")
