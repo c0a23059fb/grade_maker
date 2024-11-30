@@ -14,7 +14,8 @@ class Students():
         with open(path, "r", encoding = "utf-8") as file:
             lines = file.read().split("\n")
         students_list = lines
-        if len(students_list) == 0:
+        print(students_list)
+        if len(students_list) == 1 and students_list[0] == "":
             print("生徒が存在しません")
             exit()
 
