@@ -98,10 +98,13 @@ class Students():
         with open(output, "w", encoding = "utf-8") as file:
             #欠席者追記
             file.write("-----[欠席]-----\n")
-            for i in self.r_absence:
-                file.write(f"{i}\n")
-            for i in self.f_absence:
-                file.write(f"{i} (無欠)\n")
+            if self.r_absence == [] and self.f_absence == []:
+                file.write("なし\n")
+            else:
+                for i in self.r_absence:
+                    file.write(f"{i}\n")
+                for i in self.f_absence:
+                    file.write(f"{i} (無欠)\n")
             file.write("\n")
 
             #生徒評価三項目出力
