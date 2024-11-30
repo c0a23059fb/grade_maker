@@ -1,3 +1,4 @@
+from os import system
 from sys import exit
 from time import strftime
 
@@ -23,6 +24,13 @@ class Students():
         self.high = [[], [], []] # モチベーション
         self.normal = [[], [], []] # 理解力
         self.low = [[], [], []] # 授業態度
+
+    def print_students(self, text = "生徒名簿") -> None:
+        """生徒名簿を表示する"""
+        print(f"\n[{text}]")
+        for i, j in enumerate(self.grades):
+            print(i, j)
+        print()
 
     def check(self) -> None:
         """生徒の出欠確認を行う"""
@@ -84,9 +92,10 @@ class Students():
     def output(self) -> None:
         """入力された出欠と評価をファイルへ出力する"""
         date = strftime("%Y%m%d")
+        output = f"grade_books\{date}.txt"
         label = ["モチベーション", "理解力", "授業態度"]
 
-        with open(f"grade_books/{date}.txt", "a", encoding = "utf-8") as file:
+        with open(output, "w", encoding = "utf-8") as file:
             #欠席者追記
             file.write("-----[欠席]-----\n")
             for i in self.r_absence:
@@ -114,20 +123,22 @@ class Students():
                     file.write(f"\"{j}\", ")
                 file.write("\n\n")
 
+        # cmdでファイルを表示
+        print()
+        system("chcp 65001") # 日本語文字化け対策
+        system(f"type {output}") #
 
 
-def main() -> None:
-    students = Students("students/jiyu_B.txt")
-    for i in students.grades:
-        print(i)
+def main(path) -> None:
+    students = Students(path)
 
     #出欠確認
+    students.print_students()
     print("生徒の出欠を確認してください")
     students.check()
-    for i in students.grades:
-        print(i)
 
     #生徒評価の三項目を入力
+    students.print_students()
     print("生徒のモチベーションを評価してください")
     students.value()
     print("生徒の理解力を評価してください")
@@ -143,4 +154,5 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    path = "students/sample.txt"
+    main(path)
