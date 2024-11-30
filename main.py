@@ -154,5 +154,7 @@ def main(path) -> None:
 
 
 if __name__ == "__main__":
-    path = "students/sample.txt"
+    # path = "students/sample.txt"
+    setting = input("ファイル名を入力してください:")
+    path = f"students/{setting}.txt"
     main(path)
