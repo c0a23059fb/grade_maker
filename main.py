@@ -109,25 +109,33 @@ class Students():
 
             #生徒評価三項目出力
             for i in range(3):
+                high = ""
+                normal = ""
+                low = ""
+
                 file.write(f"-----[{label[i]}]-----\n")
-                # 高い評価
-                file.write("高い→")
+
+                file.write("高い→") # 高い評価
                 for j in self.high[i]:
-                    file.write(f"\"{j}\", ")
-                file.write("\n")
-                # 普通評価
-                file.write("普通→")
+                    high += f"{j}, "
+                high = high[:-2] # 最後のカンマを削除
+                file.write(f"{high}\n")
+
+                file.write("普通→") # 普通評価
                 for j in self.normal[i]:
-                    file.write(f"\"{j}\", ")
-                file.write("\n")
-                # 低い評価
-                if i != 2:
+                    normal += f"{j}, "
+                normal = normal[:-2] # 最後のカンマを削除
+                file.write(f"{normal}\n")
+
+                if i != 2: # 低い評価
                     file.write("低い→")
                 else:
                     file.write("悪い→")
                 for j in self.low[i]:
-                    file.write(f"\"{j}\", ")
-                file.write("\n\n")
+                    low += f"{j}, "
+                low = low[:-2] # 最後のカンマを削除
+                file.write(f"{low}\n")
+                file.write("\n")
 
         # cmdでファイルを表示
         print()
