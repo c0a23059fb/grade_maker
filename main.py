@@ -59,16 +59,17 @@ class Students():
         評価硬膜は三項目(モチベーション、理解力、授業態度)
         """
         while True:
-            values = input(f"整数{len(self.grades)}桁を入力(高い:3 普通:2 低い:1):")
-            if len(values) == len(self.grades):
-                if not self.input_checker(values, "123"):
-                    print("不正な数値です")
+            for i in self.grades:
+                values = input(f"{i}の評価を整数3桁で入力(高い:3 普通:2 低い:1):")
+                if len(values) == 3:
+                    if not self.input_checker(values, "123"):
+                        print("不正な数値です")
+                    else:
+                        self.grades[i] = values
                 else:
-                    for i, j in enumerate(self.grades):
-                        self.grades[j] += values[i]
-                    break
+                    print("入力が不正です")
             else:
-                print("入力が不正です")
+                break
 
     def input_checker(self, string: str, length: str) -> bool:
         """入力文字列の正当性を確認する"""
@@ -151,15 +152,12 @@ def main(path) -> None:
     students.print_students()
     print("生徒の出欠を確認してください")
     students.check()
+    print()
 
     #生徒評価の三項目を入力
-    students.print_students()
-    print("生徒のモチベーションを評価してください")
+    print("生徒のモチベベーション、理解力、授業態度を評価してください")
     students.value()
-    print("生徒の理解力を評価してください")
-    students.value()
-    print("生徒の授業態度を評価しください")
-    students.value()
+    print()
 
     #生徒評価をテンプレ形式へ変換
     students.identify()
