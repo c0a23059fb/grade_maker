@@ -107,19 +107,22 @@ class Students():
             #生徒評価三項目出力
             for i in range(3):
                 file.write(f"-----[{label[i]}]-----\n")
+                # 高い評価
                 file.write("高い→")
-                for j in self.high[0]:
+                for j in self.high[i]:
                     file.write(f"\"{j}\", ")
                 file.write("\n")
+                # 普通評価
                 file.write("普通→")
-                for j in self.normal[0]:
+                for j in self.normal[i]:
                     file.write(f"\"{j}\", ")
                 file.write("\n")
+                # 低い評価
                 if i != 2:
                     file.write("低い→")
                 else:
                     file.write("悪い→")
-                for j in self.low[0]:
+                for j in self.low[i]:
                     file.write(f"\"{j}\", ")
                 file.write("\n\n")
 
