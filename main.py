@@ -13,12 +13,12 @@ class Students():
         """
         with open(path, "r", encoding = "utf-8") as file:
             lines = file.read().split("\n")
-        students_list = lines
-        print(students_list)
+        students_list = lines[1:] # 生徒名簿のリスト
         if len(students_list) == 1 and students_list[0] == "":
             print("生徒が存在しません")
             exit()
 
+        self.title = lines[0].split() # タイトル
         self.grades = {i:"" for i in students_list} # 名前と評価の辞書
         self.r_absence = [] # 連絡あり欠席
         self.f_absence = [] # 連絡なし欠席
@@ -98,6 +98,9 @@ class Students():
         label = ["モチベーション", "理解力", "授業態度"]
 
         with open(output, "w", encoding = "utf-8") as file:
+            # タイトル出力
+            file.write(f"---{self.title[0]} ({self.title[1]}) {self.title[2]}---\n\n")
+
             #欠席者追記
             file.write("-----[欠席]-----\n")
             if self.r_absence == [] and self.f_absence == []:
