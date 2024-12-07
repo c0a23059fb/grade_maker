@@ -148,6 +148,11 @@ class Students():
         system(f"type {output}") #
 
 
+class auto_typ:
+    def __init__(self):
+        pass
+
+
 def main(path) -> None:
     students = Students(path)
 
