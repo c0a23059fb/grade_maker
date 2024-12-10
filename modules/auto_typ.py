@@ -9,7 +9,11 @@ from settings import setting
 
 class auto_typ:
     """LINE WORKSへの自動入力及び投稿を行うクラス"""
-    guide = {} # XPATH: 入力文字列の辞書
+    xpaths = [ # XPATHのリスト
+            "//*[@id='component_ec60d218f64f']", # 欠席入力項目のxpath}
+            "//*[@id='component_e1dcfe1e89e9']", # モチベーション入力項目のxpath
+            "//*[@id='component_7b586f568f51']", # 授業態度入力項目のxpath
+            ]
     def __init__(self, select: str ,notes: list) -> None:
         """
         select: 指定テンプレート名
@@ -17,7 +21,6 @@ class auto_typ:
         """
         self.notes = notes # 生徒評価の文字列リスト
         self.select = select # 指定テンプレート名
-        auto_typ.guide = {k: v for k, v in zip(setting.xpaths, notes)} # XPATH: 入力文字列の辞書の要素作成
         self.execute() # 入力及び投稿操作実行
 
     @classmethod
