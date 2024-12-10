@@ -21,7 +21,7 @@ def main(path) -> None:
     students.identify()
 
     #生徒評価をファイルへ出力
-    students.output()
+    notes = students.output()
 
 
 if __name__ == "__main__":

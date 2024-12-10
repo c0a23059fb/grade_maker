@@ -90,11 +90,15 @@ class Students():
                     self.low[count].append(i)
                 count += 1
 
-    def output(self) -> None:
-        """入力された出欠と評価をファイルへ出力する"""
+    def output(self) -> list[str, str, str]:
+        """
+        入力された出欠と評価をファイルへ出力する
+        出力内容をリストにして返す
+        """
         date = strftime("%Y%m%d")
         output = f"grade_books/{date}.txt"
         label = ["モチベーション", "理解力", "授業態度"]
+        notes = []
 
         with open(output, "w", encoding = "utf-8") as file:
             # タイトル出力
@@ -144,8 +148,11 @@ class Students():
                 if low[-1] != "→":
                     low = low[:-2] # 最後のカンマを削除
                 low += "\n"
-                file.write(high + normal + low + "\n")
+                note = high + normal + low
+                file.write(note + "\n")
                 file.write("\n")
+                notes.append(note)
+            return notes
 
         # cmdでファイルを表示(cmd実行時用)
         # print()
