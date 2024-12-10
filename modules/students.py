@@ -3,7 +3,7 @@ from sys import exit
 from time import strftime
 
 
-class Students():
+class Students:
     """整頓の出欠と評価を管理するクラス"""
     def __init__(self, path: str) -> None:
         """
