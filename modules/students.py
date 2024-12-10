@@ -102,14 +102,16 @@ class Students():
 
             #欠席者追記
             file.write("-----[欠席]-----\n")
+            r = ""
+            f = ""
             if self.r_absence == [] and self.f_absence == []:
                 file.write("なし\n")
             else:
                 for i in self.r_absence:
-                    file.write(f"{i}\n")
+                    r += f"{i}\n"
                 for i in self.f_absence:
-                    file.write(f"{i} (無欠)\n")
-            file.write("\n")
+                    f += f"{i}(無欠)\n"
+            file.write(r + f + "\n")
 
             #生徒評価三項目出力
             for i in range(3):
@@ -119,26 +121,30 @@ class Students():
 
                 file.write(f"-----[{label[i]}]-----\n")
 
-                file.write("高い→") # 高い評価
+                high += "高い→" # 高い評価
                 for j in self.high[i]:
                     high += f"{j}, "
-                high = high[:-2] # 最後のカンマを削除
-                file.write(f"{high}\n")
+                if high[-1] != "→":
+                    high = high[:-2] # 最後のカンマを削除
+                high += "\n"
 
-                file.write("普通→") # 普通評価
+                normal += "普通→" # 普通評価
                 for j in self.normal[i]:
                     normal += f"{j}, "
-                normal = normal[:-2] # 最後のカンマを削除
-                file.write(f"{normal}\n")
+                if normal[-1] != "→":
+                    normal = normal[:-2] # 最後のカンマを削除
+                normal += "\n"
 
                 if i != 2: # 低い評価
-                    file.write("低い→")
+                    low += "低い→"
                 else:
-                    file.write("悪い→")
+                    low += "悪い→"
                 for j in self.low[i]:
                     low += f"{j}, "
-                low = low[:-2] # 最後のカンマを削除
-                file.write(f"{low}\n")
+                if low[-1] != "→":
+                    low = low[:-2] # 最後のカンマを削除
+                low += "\n"
+                file.write(high + normal + low + "\n")
                 file.write("\n")
 
         # cmdでファイルを表示(cmd実行時用)
