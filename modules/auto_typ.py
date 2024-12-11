@@ -21,14 +21,14 @@ class AutoTyp:
         notes: 生徒評価の文字列リスト
         """
         self.notes = notes # 生徒評価の文字列リスト
-        self.template = self.select_place(title) # 指定テンプレート名
-        if self.target == "": # テンプレートが見つからない場合に終了
+        self.template = self.select_template(title) # 指定テンプレート名
+        if self.template == "": # テンプレートが見つからない場合に終了
             print("適当なテンプレートが見つかりませんでした")
             exit()
         self.driver = webdriver.Chrome() # ドライバー
         self.wait = WebDriverWait(self.driver, 10) # 待機ドライバーと時間
 
-    def select_place(self, title) -> str:
+    def select_template(self, title) -> str:
         """
         指定テンプレート名を返す
         title: Studentsクラスで作成された文字列
@@ -53,7 +53,7 @@ class AutoTyp:
         self.wait.until(EC.visibility_of_element_located((By.ID, "user_pwd"))).send_keys(setting.password)
         self.driver.find_element(By.ID, "loginBtn").click() # ログインボタンをクリックしてログイン
 
-    def select_template(self) -> None:
+    def template(self) -> None:
         """テンプレート選択"""
         self.driver.get(setting.note_url) # ノート作成ページへ
         # セレクトボックスが表示されるまで待機
