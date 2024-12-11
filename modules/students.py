@@ -24,6 +24,7 @@ class Students:
         self.high = [[], [], []] # モチベーション
         self.normal = [[], [], []] # 理解力
         self.low = [[], [], []] # 授業態度
+        self.notes = [] # 生徒評価の文字列リスト
 
     def print_students(self, text = "生徒名簿") -> None:
         """生徒名簿を表示する"""
@@ -77,7 +78,7 @@ class Students:
                 return False
         return True
 
-    def identify(self):
+    def identify(self) -> None:
         """生徒評価を参考にリストへ振り分ける"""
         for i in self.grades:
             count = 0
@@ -98,7 +99,6 @@ class Students:
         date = strftime("%Y%m%d")
         output = f"grade_books/{date}.txt"
         label = ["モチベーション", "理解力", "授業態度"]
-        notes = []
 
         with open(output, "w", encoding = "utf-8") as file:
             # タイトル出力
@@ -151,13 +151,29 @@ class Students:
                 note = high + normal + low
                 file.write(note + "\n")
                 file.write("\n")
-                notes.append(note)
-            return notes
+
+                self.notes.append(note) # 出力結果を保管
 
         # cmdでファイルを表示(cmd実行時用)
         # print()
         # system("chcp 65001") # 日本語文字化け対策
         # system(f"type {output}") # ファイル内容表示
+
+    def execute(self) -> None:
+        """通常プロセス"""
+        #出欠確認
+        self.print_students()
+        print("生徒の出欠を確認してください")
+        self.check()
+        print()
+        #生徒評価の三項目を入力
+        print("生徒のモチベベーション、理解力、授業態度を評価してください")
+        self.value()
+        print()
+        #生徒評価をテンプレ形式へ変換
+        self.identify()
+        #生徒評価をファイルへ出力
+        self.output()
 
 
 if __name__ == "__main__":
