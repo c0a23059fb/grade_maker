@@ -96,13 +96,14 @@ class Students:
         入力された出欠と評価をファイルへ出力する
         出力内容をリストにして返す
         """
+        title_date = strftime("%m/%d")
         date = strftime("%Y%m%d")
         output = f"grade_books/{date}.txt"
         label = ["モチベーション", "理解力", "授業態度"]
 
         with open(output, "w", encoding = "utf-8") as file:
             # タイトル出力
-            file.write(f"---{self.title[0]} ({self.title[1]}) {self.title[2]}---\n\n")
+            file.write(f"---{title_date} ({self.title[1]}) {self.title[2]}---\n\n")
 
             #欠席者追記
             file.write("-----[欠席]-----\n")
@@ -177,4 +178,5 @@ class Students:
 
 
 if __name__ == "__main__":
-    Students("students/sample.txt")
+    # Students("students/sample.txt")
+    print()
