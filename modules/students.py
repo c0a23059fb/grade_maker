@@ -116,7 +116,9 @@ class Students:
                     r += f"{i}\n"
                 for i in self.f_absence:
                     f += f"{i}(無欠)\n"
-            file.write(r + f + "\n")
+            absences = r + f + "\n"
+            self.notes.append(absences)
+            file.write(absences)
 
             #生徒評価三項目出力
             for i in range(3):

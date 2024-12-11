@@ -10,8 +10,9 @@ from settings import setting
 class AutoTyp:
     """LINE WORKSへの自動入力及び投稿を行うクラス"""
     xpaths = [ # XPATHのリスト
-            "//*[@id='component_ec60d218f64f']", # 欠席入力項目のxpath}
+            "//*[@id='component_ec60d218f64f']", # 欠席入力項目のxpath
             "//*[@id='component_e1dcfe1e89e9']", # モチベーション入力項目のxpath
+            "//*[@id='component_46db6bb1576f']", # 理解力入力項目xpath
             "//*[@id='component_7b586f568f51']", # 授業態度入力項目のxpath
             ]
 
@@ -53,7 +54,7 @@ class AutoTyp:
         self.wait.until(EC.visibility_of_element_located((By.ID, "user_pwd"))).send_keys(setting.password)
         self.driver.find_element(By.ID, "loginBtn").click() # ログインボタンをクリックしてログイン
 
-    def template(self) -> None:
+    def call_template(self) -> None:
         """テンプレート選択"""
         self.driver.get(setting.note_url) # ノート作成ページへ
         # セレクトボックスが表示されるまで待機
@@ -65,12 +66,22 @@ class AutoTyp:
             if self.template in select.text: # 指定テンプレート名を探す
                 select.click()
 
+        # テムプレート作成
+        self.wait.until(EC.presence_of_element_located((By.XPATH, "//*[@id='note_editor']/div/div[3]/iframe")))
+        iframe = self.driver.find_element(By.XPATH, "//*[@id='note_editor']/div/div[3]/iframe")
+        self.driver.switch_to.frame(iframe) # iframeへ切り替え
+        self.driver.find_element(By.LINK_TEXT, "作成").click() # 作成をクリック
+        self.driver.switch_to.window(self.driver.window_handles[-1]) # 入力用ウィンドウへ切り替え
+        # 新ウィンドウが表示されるまで待機
+        self.wait.until(EC.presence_of_element_located((By.XPATH, "//*[@id='iframe']")))
+        iframe = self.driver.find_element(By.XPATH, "//*[@id='iframe']")
+        self.driver.switch_to.frame(iframe) # iframeへ切り替え
+
     def execute(self) -> None:
         """通常プロセス"""
         self.login()
-        self.select_template()
+        self.call_template()
 
 if __name__ == "__main__":
     lis = ["武蔵小杉-マイクラ", "日", "2部"]
     aut_typ = AutoTyp(setting.places_1, []) # インスタンス生成
-    # AutoTyp.login()

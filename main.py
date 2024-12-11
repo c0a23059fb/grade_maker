@@ -16,4 +16,6 @@ if __name__ == "__main__":
     # a = AutoTyp(file, [])
     # a.execute()
     lis = ["武蔵小杉-マイクラ", "土", "2部"]
-    aut_typ = AutoTyp(lis, [])
+    liss = [["A"], ["B"], ["C"], ["D"]]
+    aut_typ = AutoTyp(lis, liss)
+    aut_typ.execute()
