@@ -1,3 +1,5 @@
+from sys import exit
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -19,10 +21,27 @@ class AutoTyp:
         notes: 生徒評価の文字列リスト
         """
         self.notes = notes # 生徒評価の文字列リスト
-        self.target = self.selecter # 指定テンプレート名
-        self.execute() # 入力及び投稿操作実行
+        self.template = self.select_place(title) # 指定テンプレート名
+        if self.target == "": # テンプレートが見つからない場合に終了
+            print("適当なテンプレートが見つかりませんでした")
+            exit()
         self.driver = webdriver.Chrome() # ドライバー
         self.wait = WebDriverWait(self.driver, 10) # 待機ドライバーと時間
+
+    def select_place(self, title) -> str:
+        """
+        指定テンプレート名を返す
+        title: Studentsクラスで作成された文字列
+        """
+        for i in setting.places:
+            if i in title[0]: # 場所特定
+                for j in setting.places[i]:
+                    if title[1] in j: # 曜日特定
+                        for k in setting.courses:
+                            if k in j and k in title[0]:
+                                return j
+        else:
+            return ""
 
     def login(self) -> None:
         """対象ページへログイン"""
@@ -41,10 +60,9 @@ class AutoTyp:
         self.wait.until(EC.presence_of_element_located((By.CLASS_NAME, "select_box")))
         self.driver.find_element(By.CLASS_NAME, "subject_input").send_keys("kafdsl;kj") # 投稿タイトル入力
         self.driver.find_element(By.CLASS_NAME, "select_box").click() # テンプレート選択肢を表示
-        target = "武蔵小杉-日-＜マイクラ＞" # 指定したいテンプレート名
         # 指定テンプレートを選択
         for select in self.driver.find_elements(By.CLASS_NAME, "posts_list li a"):
-            if target in select.text:
+            if self.template in select.text: # 指定テンプレート名を探す
                 select.click()
 
     def execute(self) -> None:
@@ -53,5 +71,6 @@ class AutoTyp:
         self.select_template()
 
 if __name__ == "__main__":
-    # aut_typ = AutoTyp(setting.places_1, []) # インスタンス生成
-    AutoTyp.login()
+    lis = ["武蔵小杉-マイクラ", "日", "2部"]
+    aut_typ = AutoTyp(setting.places_1, []) # インスタンス生成
+    # AutoTyp.login()

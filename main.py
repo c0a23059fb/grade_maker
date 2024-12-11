@@ -10,8 +10,10 @@ def main(path) -> None:
 
 
 if __name__ == "__main__":
-    file = input("ファイル名を入力してください:")
-    path = f"students/{file}.txt"
-    main(path)
+    # file = input("ファイル名を入力してください:")
+    # path = f"students/{file}.txt"
+    # main(path)
     # a = AutoTyp(file, [])
     # a.execute()
+    lis = ["武蔵小杉-マイクラ", "土", "2部"]
+    aut_typ = AutoTyp(lis, [])
