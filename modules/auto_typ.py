@@ -17,16 +17,18 @@ class AutoTyp:
             "//*[@id='component_7b586f568f51']", # 授業態度入力項目のxpath
             ]
 
-    def __init__(self, title: list[str] ,notes: list) -> None:
+    def __init__(self, title: list ,notes: list, note_name: str) -> None:
         """
         title: ファイルから読み取れるタイトル
         notes: 生徒評価の文字列リスト
+        note_name: 投稿ノート名
         """
         self.notes = {k: v for k, v in zip(__class__.xpaths, notes)} # 生徒評価の文字列リスト
         self.template = self.select_template(title) # 指定テンプレート名
         if self.template == "": # テンプレートが見つからない場合に終了
             print("適当なテンプレートが見つかりませんでした")
             exit()
+        self.note_name = note_name
         self.driver = webdriver.Chrome() # ドライバー
         self.wait = WebDriverWait(self.driver, 15) # 待機ドライバーと時間
 
@@ -46,6 +48,7 @@ class AutoTyp:
             return ""
 
     def default(self) -> None:
+        """ノート投稿までの通常プロセス"""
         # ログイン
         self.driver.get(setting.login_url) # ログインページへ
         # ID入力欄が表示されるまで待機
@@ -55,13 +58,14 @@ class AutoTyp:
         # パスワード入力欄が表示されるまで待機
         self.wait.until(EC.presence_of_element_located((By.ID, "user_pwd")))
         self.driver.find_element(By.ID, "user_pwd").send_keys(setting.password) # パスワードを入力
+        sleep(1)
         self.driver.find_element(By.ID, "loginBtn").click() # ログインボタンをクリックしてログイン
 
         # ノートテンプレート選択
         self.driver.get(setting.note_url) # ノート作成ページへ
         # セレクトボックスが表示されるまで待機
         self.wait.until(EC.presence_of_element_located((By.CLASS_NAME, "select_box")))
-        self.driver.find_element(By.CLASS_NAME, "subject_input").send_keys("kafdsl;kj") # 投稿タイトル入力
+        self.driver.find_element(By.CLASS_NAME, "subject_input").send_keys(self.note_name) # 投稿タイトル入力
         self.driver.find_element(By.CLASS_NAME, "select_box").click() # テンプレート選択肢を表示
         target = "武蔵小杉-金-＜ビスケット・スクラッチ＞" # 指定したいテンプレート名
         # 指定テンプレートを選択
@@ -82,9 +86,11 @@ class AutoTyp:
 
         # 入力
         self.wait.until(EC.presence_of_element_located((By.CLASS_NAME, "text_wrap")))
+        sleep(1)
         for k, v in self.notes.items():
             self.driver.find_element(By.XPATH, k).send_keys(v) # 入力
             self.wait.until(EC.text_to_be_present_in_element((By.XPATH, k), v)) # 入力完了まで待機
+            sleep(1)
         self.driver.find_element(By.CLASS_NAME, "btn_text").click() # 完了ボタンをクリックして入力終了
         self.driver.switch_to.window(self.driver.window_handles[0]) # 元のウィンドウへ切り替え
 

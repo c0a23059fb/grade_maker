@@ -16,8 +16,8 @@ class Students:
         if len(students_list) == 1 and students_list[0] == "":
             print("生徒が存在しません")
             exit()
-
         self.title = lines[0].split() # タイトル
+        self.note_name = "" # 投稿ノート名
         self.grades = {i:"" for i in students_list} # 名前と評価の辞書
         self.r_absence = [] # 連絡あり欠席
         self.f_absence = [] # 連絡なし欠席
@@ -98,12 +98,13 @@ class Students:
         """
         title_date = strftime("%m/%d")
         date = strftime("%Y%m%d")
+        self.note_name = f"{title_date} ({self.title[1]}) {self.title[2]}"
         output = f"grade_books/{date}.txt"
         label = ["モチベーション", "理解力", "授業態度"]
 
         with open(output, "w", encoding = "utf-8") as file:
             # タイトル出力
-            file.write(f"---{title_date} ({self.title[1]}) {self.title[2]}---\n\n")
+            file.write(f"---{self.note_name}---\n\n")
 
             #欠席者追記
             file.write("-----[欠席]-----\n")
