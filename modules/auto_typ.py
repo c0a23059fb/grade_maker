@@ -1,4 +1,5 @@
 from sys import exit
+from time import sleep
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -21,13 +22,13 @@ class AutoTyp:
         title: ファイルから読み取れるタイトル
         notes: 生徒評価の文字列リスト
         """
-        self.notes = notes # 生徒評価の文字列リスト
+        self.notes = {k: v for k, v in zip(__class__.xpaths, notes)} # 生徒評価の文字列リスト
         self.template = self.select_template(title) # 指定テンプレート名
         if self.template == "": # テンプレートが見つからない場合に終了
             print("適当なテンプレートが見つかりませんでした")
             exit()
         self.driver = webdriver.Chrome() # ドライバー
-        self.wait = WebDriverWait(self.driver, 10) # 待機ドライバーと時間
+        self.wait = WebDriverWait(self.driver, 15) # 待機ドライバーと時間
 
     def select_template(self, title) -> str:
         """
@@ -44,44 +45,49 @@ class AutoTyp:
         else:
             return ""
 
-    def login(self) -> None:
-        """対象ページへログイン"""
+    def default(self) -> None:
+        # ログイン
         self.driver.get(setting.login_url) # ログインページへ
-        # ID入力欄が表示されるまで待機してから入力
-        self.wait.until(EC.presence_of_element_located((By.ID, "user_id"))).send_keys(setting.id)
+        # ID入力欄が表示されるまで待機
+        self.wait.until(EC.presence_of_element_located((By.ID, "user_id")))
+        self.driver.find_element(By.ID, "user_id").send_keys(setting.id) # IDを入力
         self.driver.find_element(By.ID, "loginStart").click() # ログインボタンをクリックしてパスワード入力へ
-        # パスワード入力欄が表示されるまで待機してから入力
-        self.wait.until(EC.visibility_of_element_located((By.ID, "user_pwd"))).send_keys(setting.password)
+        # パスワード入力欄が表示されるまで待機
+        self.wait.until(EC.presence_of_element_located((By.ID, "user_pwd")))
+        self.driver.find_element(By.ID, "user_pwd").send_keys(setting.password) # パスワードを入力
         self.driver.find_element(By.ID, "loginBtn").click() # ログインボタンをクリックしてログイン
 
-    def call_template(self) -> None:
-        """テンプレート選択"""
+        # ノートテンプレート選択
         self.driver.get(setting.note_url) # ノート作成ページへ
         # セレクトボックスが表示されるまで待機
         self.wait.until(EC.presence_of_element_located((By.CLASS_NAME, "select_box")))
         self.driver.find_element(By.CLASS_NAME, "subject_input").send_keys("kafdsl;kj") # 投稿タイトル入力
         self.driver.find_element(By.CLASS_NAME, "select_box").click() # テンプレート選択肢を表示
+        target = "武蔵小杉-金-＜ビスケット・スクラッチ＞" # 指定したいテンプレート名
         # 指定テンプレートを選択
         for select in self.driver.find_elements(By.CLASS_NAME, "posts_list li a"):
-            if self.template in select.text: # 指定テンプレート名を探す
+            if target in select.text:
                 select.click()
 
         # テムプレート作成
         self.wait.until(EC.presence_of_element_located((By.XPATH, "//*[@id='note_editor']/div/div[3]/iframe")))
         iframe = self.driver.find_element(By.XPATH, "//*[@id='note_editor']/div/div[3]/iframe")
         self.driver.switch_to.frame(iframe) # iframeへ切り替え
-        self.driver.find_element(By.LINK_TEXT, "作成").click() # 作成をクリック
+        self.driver.find_element(By.LINK_TEXT, "作成").click() # テンプレート作成
         self.driver.switch_to.window(self.driver.window_handles[-1]) # 入力用ウィンドウへ切り替え
         # 新ウィンドウが表示されるまで待機
         self.wait.until(EC.presence_of_element_located((By.XPATH, "//*[@id='iframe']")))
         iframe = self.driver.find_element(By.XPATH, "//*[@id='iframe']")
         self.driver.switch_to.frame(iframe) # iframeへ切り替え
 
+        # 入力
+        self.wait.until(EC.presence_of_element_located((By.CLASS_NAME, "text_wrap")))
+        for k, v in self.notes.items():
+            self.driver.find_element(By.XPATH, k).send_keys(v) # 入力
+            self.wait.until(EC.text_to_be_present_in_element((By.XPATH, k), v)) # 入力完了まで待機
+        self.driver.find_element(By.CLASS_NAME, "btn_text").click() # 完了ボタンをクリックして入力終了
+        self.driver.switch_to.window(self.driver.window_handles[0]) # 元のウィンドウへ切り替え
+
     def execute(self) -> None:
         """通常プロセス"""
-        self.login()
-        self.call_template()
-
-if __name__ == "__main__":
-    lis = ["武蔵小杉-マイクラ", "日", "2部"]
-    aut_typ = AutoTyp(setting.places_1, []) # インスタンス生成
+        self.default()
