@@ -41,15 +41,14 @@ class AutoTyp:
             if i in title[0]: # 場所特定
                 for j in setting.places[i]:
                     if title[1] in j: # 曜日特定
-                        for k in setting.courses:
+                        for k in setting.courses: # コース特定
                             if k in j and k in title[0]:
                                 return j
         else:
             return ""
 
-    def default(self) -> None:
-        """ノート投稿までの通常プロセス"""
-        # ログイン
+    def login(self) -> None:
+        """ログイン"""
         self.driver.get(setting.login_url) # ログインページへ
         # ID入力欄が表示されるまで待機
         self.wait.until(EC.presence_of_element_located((By.ID, "user_id")))
@@ -58,22 +57,22 @@ class AutoTyp:
         # パスワード入力欄が表示されるまで待機
         self.wait.until(EC.presence_of_element_located((By.ID, "user_pwd")))
         self.driver.find_element(By.ID, "user_pwd").send_keys(setting.password) # パスワードを入力
-        sleep(1)
         self.driver.find_element(By.ID, "loginBtn").click() # ログインボタンをクリックしてログイン
 
-        # ノートテンプレート選択
+    def setting_template(self) -> None:
+        """テンプレート指定"""
         self.driver.get(setting.note_url) # ノート作成ページへ
         # セレクトボックスが表示されるまで待機
         self.wait.until(EC.presence_of_element_located((By.CLASS_NAME, "select_box")))
         self.driver.find_element(By.CLASS_NAME, "subject_input").send_keys(self.note_name) # 投稿タイトル入力
         self.driver.find_element(By.CLASS_NAME, "select_box").click() # テンプレート選択肢を表示
-        target = "武蔵小杉-金-＜ビスケット・スクラッチ＞" # 指定したいテンプレート名
         # 指定テンプレートを選択
         for select in self.driver.find_elements(By.CLASS_NAME, "posts_list li a"):
-            if target in select.text:
+            if self.template in select.text:
                 select.click()
 
-        # テムプレート作成
+    def set_note(self) -> None:
+        """ノート入力"""
         self.wait.until(EC.presence_of_element_located((By.XPATH, "//*[@id='note_editor']/div/div[3]/iframe")))
         iframe = self.driver.find_element(By.XPATH, "//*[@id='note_editor']/div/div[3]/iframe")
         self.driver.switch_to.frame(iframe) # iframeへ切り替え
@@ -84,16 +83,38 @@ class AutoTyp:
         iframe = self.driver.find_element(By.XPATH, "//*[@id='iframe']")
         self.driver.switch_to.frame(iframe) # iframeへ切り替え
 
-        # 入力
+    def typ_note(self) -> None:
         self.wait.until(EC.presence_of_element_located((By.CLASS_NAME, "text_wrap")))
         sleep(1)
         for k, v in self.notes.items():
-            self.driver.find_element(By.XPATH, k).send_keys(v) # 入力
+            print(k, v)
+            self.wait.until(EC.element_to_be_clickable((By.XPATH, k))).send_keys(v) # 入力
             self.wait.until(EC.text_to_be_present_in_element((By.XPATH, k), v)) # 入力完了まで待機
-            sleep(1)
+            sleep(0.5)
         self.driver.find_element(By.CLASS_NAME, "btn_text").click() # 完了ボタンをクリックして入力終了
         self.driver.switch_to.window(self.driver.window_handles[0]) # 元のウィンドウへ切り替え
 
+    def post_note(self) -> None:
+        """ノート投稿"""
+        self.driver.find_element(By.CLASS_NAME, "btn_point").click() # 投稿ボタンをクリック
+        # 通知設定用チェックボックス表示まで待機
+        check_box = self.wait.until(EC.element_to_be_clickable((By.XPATH, "//*[@id='app']/div[3]/div[2]/div[1]/div/p/input")))
+        self.driver.execute_script("arguments[0].click();", check_box)# 通知を送らない
+        WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.LINK_TEXT, "OK")))
+        self.driver.find_element(By.LINK_TEXT, "OK").click() # OKをクリック
+
     def execute(self) -> None:
         """通常プロセス"""
-        self.default()
+        # ログイン
+        while True: # ログイン成功までループ
+            try:
+                self.login()
+                self.setting_template() # ノートテンプレート選択
+                break
+            except:
+                print("再試行")
+
+        self.set_note() # テムプレート指定
+        self.typ_note() # 入力
+        self.post_note() # 投稿
+        self.driver.quit() # 終了
